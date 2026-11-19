@@ -1,0 +1,12 @@
+{
+  "endpoint_url": "http://seaweedfs:8333",
+  "aws_access_key_id": "admin",
+  "aws_secret_access_key": "password",
+  "region_name": "us-east-1",
+  "config_kwargs": {
+    "s3": {
+      "addressing_style": "path"
+    }
+  }
+}
+
