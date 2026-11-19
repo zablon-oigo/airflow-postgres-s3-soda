@@ -6,7 +6,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 import zipfile
-
+from io import BytesIO
 
 default_args = {
     "owner": "zablon",
@@ -31,23 +31,26 @@ def titanic_processing():
         URL = f"https://github.com/{REPO}/releases/download/{TAG}/titanic.zip"
 
         destination = Path("/tmp")
-        zip_file = destination / "titanic.zip"
         csv_file = destination / "titanic.csv"
 
         print("Downloading Titanic dataset")
-        response = requests.get(URL, timeout=120)
+        response = requests.get(URL, timeout=120, allow_redirects=True)
         response.raise_for_status()
-        zip_file.write_bytes(response.content)
+
+        if not response.content.startswith(b"PK"):
+            raise ValueError(
+                f"Downloaded content is not a zip file. "
+                f"First bytes: {response.content[:200]!r}"
+            )
 
         print("Extracting dataset")
-        with zipfile.ZipFile(zip_file, "r") as archive:
+        with zipfile.ZipFile(BytesIO(response.content)) as archive:
             archive.extractall(destination)
-        zip_file.unlink()
 
         if not csv_file.exists():
             raise FileNotFoundError("titanic.csv was not found after extraction")
 
-        print("Dataset ingestion completed!")
+        print("Dataset ingestion completed")
         return str(csv_file)
 
     @task
