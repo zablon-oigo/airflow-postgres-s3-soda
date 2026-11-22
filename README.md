@@ -7,13 +7,14 @@
 ![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)
 ![uv](https://img.shields.io/badge/uv-Package_Manager-DE5FE9?logo=uv&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?logo=githubactions&logoColor=white)
-![Build Status](https://github.com/zablon-oigo/airflow-postgres-s3-soda/actions/workflows/ci.yml/badge.svg)
 ![GitHub Release](https://img.shields.io/github/v/release/zablon-oigo/airflow-postgres-s3-soda?label=Production%20Release)
 
-# Running the Pipeline Locally
+## Architecture Diagram
+
+### Running the Pipeline Locally
 
 
-## 1. Start Airflow
+#### 1. Start Airflow
 
 Start the local Astro development environment:
 
@@ -33,7 +34,7 @@ Open the Airflow web interface:
 http://localhost:8080
 ```
 
-## 2. Initialize the PostgreSQL Database
+#### 2. Initialize the PostgreSQL Database
 
 Connect to the PostgreSQL container:
 
@@ -61,7 +62,7 @@ CREATE SCHEMA IF NOT EXISTS staging;
 CREATE SCHEMA IF NOT EXISTS marts;
 ```
 
-## 3. Connect Airflow to SeaweedFS
+#### 3. Connect Airflow to SeaweedFS
 
 Airflow and SeaweedFS must be able to communicate over a shared Docker network.
 
@@ -85,7 +86,7 @@ Inspect the Airflow containers if necessary:
 docker inspect <airflow-container>
 ```
 
-### Test connectivity
+#### Test connectivity
 
 Run the following command from an Airflow worker or scheduler container:
 
@@ -96,7 +97,7 @@ docker exec -it <airflow-worker-or-scheduler> \
 
 A successful HTTP response confirms that the Airflow container can reach the SeaweedFS S3 endpoint.
 
-## 4. Execute the Airflow DAGs
+#### 4. Execute the Airflow DAGs
 
 1. Open the Airflow UI at http://localhost:8080.
 2. Locate the Titanic pipeline DAG.
@@ -106,7 +107,7 @@ A successful HTTP response confirms that the Airflow container can reach the Sea
 
 The pipeline downloads the dataset from GitHub Releases, loads it into PostgreSQL, and stores the dataset in SeaweedFS.
 
-## 5. Verify Data in SeaweedFS
+#### 5. Verify Data in SeaweedFS
 
 Use the AWS CLI to list objects in the warehouse bucket:
 
@@ -119,7 +120,7 @@ s3 ls s3://warehouse/ --recursive
 
 This verifies that the dataset has been successfully written to object storage.
 
-## 6. Run dbt Transformations
+#### 6. Run dbt Transformations
 
 Navigate to the dbt project directory:
 
@@ -127,43 +128,43 @@ Navigate to the dbt project directory:
 cd analytics
 ```
 
-### Validate the dbt configuration
+#### Validate the dbt configuration
 
 ```bash
 uv run dbt debug
 ```
 
-### Clean previous build artifacts
+#### Clean previous build artifacts
 
 ```bash
 uv run dbt clean
 ```
 
-### Parse the project
+#### Parse the project
 
 ```bash
 uv run dbt parse
 ```
 
-### Inspect configured sources
+#### Inspect configured sources
 
 ```bash
 uv run dbt ls --resource-type source
 ```
 
-### Build models and execute tests
+#### Build models and execute tests
 
 ```bash
 uv run dbt build
 ```
 
-### Generate documentation
+#### Generate documentation
 
 ```bash
 uv run dbt docs generate
 ```
 
-### Serve documentation
+#### Serve documentation
 
 ```bash
 uv run dbt docs serve --port 8081
@@ -177,7 +178,7 @@ http://localhost:8081
 
 Port 8081 is used to avoid conflicting with the Airflow UI on port 8080
 
-## 7. Verify dbt Models in PostgreSQL
+#### 7. Verify dbt Models in PostgreSQL
 
 After running dbt build, connect to PostgreSQL to verify that the staging and marts models have been created successfully.
 
@@ -194,17 +195,17 @@ docker exec -it demo_878d9c-postgres-1 psql -U postgres -d analytics
 
 
 
-## 8. Run Soda Data Quality Tests
+#### 8. Run Soda Data Quality Tests
 
 Soda is used to validate data quality through contracts across the PostgreSQL datasets.
 
-### Test the data source connection
+#### Test the data source connection
 
 ```bash
 uv run soda data-source test -ds config.yml
 ```
 
-### Create a contract
+#### Create a contract
 
 Generate a contract for the Titanic fact table:
 
@@ -215,13 +216,13 @@ uv run soda contract create \
   -f contracts/fct_titanic.yml
 ```
 
-### Test the contract
+#### Test the contract
 
 ```bash
 uv run soda contract test -c contracts/fct_titanic.yml
 ```
 
-### Verify the contract against the data source
+#### Verify the contract against the data source
 
 ```bash
 uv run soda contract verify \
