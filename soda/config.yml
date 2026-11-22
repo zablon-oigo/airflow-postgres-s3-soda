@@ -1,0 +1,8 @@
+type: postgres
+name: titanic
+connection:
+  host: localhost
+  port: 5433
+  user: postgres
+  password: postgres
+  database: analytics
