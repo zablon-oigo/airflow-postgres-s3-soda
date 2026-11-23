@@ -1,0 +1,40 @@
+dataset: titanic/analytics/marts/agg_survival_by_age_group
+
+checks:
+  - schema:
+      allow_extra_columns: false
+  - row_count:
+      threshold:
+        must_equal: 5
+
+columns:
+  - name: age_group
+    checks:
+      - missing:
+      - duplicate:
+      - invalid:
+          valid_values:
+            - Child
+            - Young Adult
+            - Adult
+            - Senior
+            - Unknown
+
+  - name: total_passengers
+    checks:
+      - missing:
+      - invalid:
+          valid_min: 1
+
+  - name: total_survivors
+    checks:
+      - missing:
+      - invalid:
+          valid_min: 0
+
+  - name: survival_rate
+    checks:
+      - missing:
+      - invalid:
+          valid_min: 0
+          valid_max: 100
