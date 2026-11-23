@@ -1,0 +1,38 @@
+dataset: titanic/analytics/marts/agg_survival_by_class
+
+checks:
+  - schema:
+      allow_extra_columns: false
+  - row_count:
+      threshold:
+        must_equal: 3
+
+columns:
+  - name: passenger_class
+    checks:
+      - missing:
+      - duplicate:
+      - invalid:
+          valid_values:
+            - 1
+            - 2
+            - 3
+
+  - name: total_passengers
+    checks:
+      - missing:
+      - invalid:
+          valid_min: 1
+
+  - name: total_survivors
+    checks:
+      - missing:
+      - invalid:
+          valid_min: 0
+
+  - name: survival_rate
+    checks:
+      - missing:
+      - invalid:
+          valid_min: 0
+          valid_max: 100
