@@ -1,0 +1,81 @@
+dataset: titanic/analytics/staging/stg_titanic
+
+checks:
+  - schema:
+      allow_extra_columns: false
+  - row_count:
+      threshold:
+        must_equal: 891
+
+columns:
+  - name: passenger_id
+    checks:
+      - missing:
+      - duplicate:
+
+  - name: survived
+    checks:
+      - missing:
+      - invalid:
+          valid_values:
+            - 0
+            - 1
+
+  - name: passenger_class
+    checks:
+      - missing:
+      - invalid:
+          valid_values:
+            - 1
+            - 2
+            - 3
+
+  - name: passenger_name
+    checks:
+      - missing:
+
+  - name: sex
+    checks:
+      - missing:
+      - invalid:
+          valid_values:
+            - male
+            - female
+
+  - name: age
+    checks:
+      - invalid:
+          valid_min: 0
+          valid_max: 120
+
+  - name: siblings_spouses
+    checks:
+      - missing:
+      - invalid:
+          valid_min: 0
+
+  - name: parents_children
+    checks:
+      - missing:
+      - invalid:
+          valid_min: 0
+
+  - name: ticket
+    checks:
+      - missing:
+
+  - name: fare
+    checks:
+      - missing:
+      - invalid:
+          valid_min: 0
+
+  - name: cabin
+
+  - name: embarked
+    checks:
+      - invalid:
+          valid_values:
+            - S
+            - C
+            - Q
