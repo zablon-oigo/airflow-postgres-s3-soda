@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: titanic
+    description: Raw Titanic passenger dataset
+    database: analytics
+    schema: raw
+
+    tables:
+      - name: titanic
+        description: Original Titanic passenger records
