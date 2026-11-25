@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: stg_titanic
+    description: Cleaned and standardized Titanic passenger data.
+
+    columns:
+      - name: passenger_id
+        data_tests:
+          - unique
+          - not_null
+
+      - name: survived
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+
+      - name: sex
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['male', 'female']
+
+      - name: passenger_class
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3]
+
+  - name: fct_titanic
+    description: Passenger-level analytical fact table.
+
+    columns:
+      - name: passenger_id
+        data_tests:
+          - unique
+          - not_null
